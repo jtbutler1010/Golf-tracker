@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Josh Golf Tracker v5</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div>
+        <h1>Josh Golf Tracker v5</h1>
+        <p class="sub">Default centre-pin workflow, shot distances, green tracking, club stats, and end-of-round analysis</p>
+      </div>
+      <button id="installBtn" class="ghost hidden">Install</button>
+    </header>
+
+    <section class="card">
+      <h2>Start Round</h2>
+      <div class="grid two">
+        <label><span>Player</span><input id="playerName" placeholder="Josh Butler" /></label>
+        <label><span>Date</span><input id="roundDate" type="date" /></label>
+      </div>
+      <div class="grid two">
+        <label><span>Course</span><select id="courseSelect"></select></label>
+        <label><span>Tee</span><select id="teeSelect"><option>Blue</option><option>White</option><option>Red</option><option>Black</option></select></label>
+      </div>
+      <div class="stack">
+        <button id="useLocationBtn">Use my location for nearby course</button>
+        <button id="customCourseBtn" class="ghost">Create custom course</button>
+      </div>
+      <p id="locationResult" class="hint"></p>
+      <div id="customCourseForm" class="hidden custom-form">
+        <div class="grid two">
+          <label><span>Course name</span><input id="customCourseName" placeholder="Beerwah Golf Club" /></label>
+          <label><span>Holes</span><input id="customCourseHoles" type="number" min="1" max="18" value="18" /></label>
+        </div>
+        <button id="saveCustomCourseBtn">Save course</button>
+      </div>
+      <button id="startRoundBtn" class="primary">Start Tracking</button>
+    </section>
+
+    <section id="roundSection" class="hidden">
+      <div class="card">
+        <div class="round-head">
+          <div>
+            <h2 id="roundTitle">Round</h2>
+            <p id="roundMeta" class="sub"></p>
+          </div>
+          <div class="nav">
+            <button id="prevHoleBtn" class="ghost">← Prev</button>
+            <div id="holeBadge" class="badge">Hole 1</div>
+            <button id="nextHoleBtn" class="ghost">Next →</button>
+          </div>
+        </div>
+
+        <div class="grid two">
+          <label><span>Par</span><input id="parInput" type="number" min="3" max="5" /></label>
+          <label><span>Hole length (m)</span><input id="holeLengthInput" type="number" min="50" max="700" /></label>
+        </div>
+
+        <div class="grid two">
+          <div class="shot-card">
+            <div class="section-head tight">
+              <div>
+                <h3>Hole Map</h3>
+                <p class="hint">Each hole now defaults the pin to the centre of the green. When you get to the green, you can refine the pin spot or save the exact GPS pin.</p>
+              </div>
+              <button id="editPinBtn" class="ghost small">Save Exact Pin From My Location</button>
+            </div>
+            <div id="holeMapVisual" class="hole-map-visual"></div>
+            <p id="pinMeta" class="mini"></p>
+          </div>
+
+          <div class="shot-card">
+            <h3>Shot Locations</h3>
+            <div id="driveMap" class="map fairway-map">
+              <button data-drive="far-left">Far Left</button>
+              <button data-drive="left">Left</button>
+              <button data-drive="center">Center</button>
+              <button data-drive="right">Right</button>
+              <button data-drive="far-right">Far Right</button>
+            </div>
+            <p id="driveValue" class="selected-label">Drive miss: none selected</p>
+            <div class="top-gap">
+              <h3>Pin Position <span class="mini">(defaults to centre)</span></h3>
+              <div id="pinSpotMap" class="green-map compact-map">
+                <button data-pinspot="back-left" style="left:12%;top:12%"></button>
+                <button data-pinspot="back-center" style="left:44%;top:8%"></button>
+                <button data-pinspot="back-right" style="left:76%;top:12%"></button>
+                <button data-pinspot="middle-left" style="left:8%;top:42%"></button>
+                <button data-pinspot="center" style="left:44%;top:42%"></button>
+                <button data-pinspot="middle-right" style="left:80%;top:42%"></button>
+                <button data-pinspot="front-left" style="left:12%;top:74%"></button>
+                <button data-pinspot="front-center" style="left:44%;top:80%"></button>
+                <button data-pinspot="front-right" style="left:76%;top:74%"></button>
+              </div>
+              <p id="pinSpotValue" class="selected-label">Pin position: centre default</p>
+            </div>
+            <div class="top-gap">
+              <h3>Ball Finish on Green</h3>
+              <div id="greenMap" class="green-map compact-map">
+                <button data-green="back-left" style="left:12%;top:12%"></button>
+                <button data-green="back-center" style="left:44%;top:8%"></button>
+                <button data-green="back-right" style="left:76%;top:12%"></button>
+                <button data-green="middle-left" style="left:8%;top:42%"></button>
+                <button data-green="center" style="left:44%;top:42%"></button>
+                <button data-green="middle-right" style="left:80%;top:42%"></button>
+                <button data-green="front-left" style="left:12%;top:74%"></button>
+                <button data-green="front-center" style="left:44%;top:80%"></button>
+                <button data-green="front-right" style="left:76%;top:74%"></button>
+              </div>
+              <p id="greenValue" class="selected-label">Green finish: none selected</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="section-head">
+          <div>
+            <h3>Shot Entry</h3>
+            <p class="hint">Distance to pin is in metres. Use GPS when the current hole pin is mapped.</p>
+          </div>
+          <div class="stack no-margin">
+            <button id="gpsDistanceBtn" class="ghost small">Use GPS distance</button>
+            <button id="savePositionBtn" class="ghost small">Save My Shot Location</button>
+          </div>
+        </div>
+
+        <div class="grid three">
+          <label><span>Distance to pin (m)</span><input id="shotDistanceInput" type="number" min="0" step="0.1" placeholder="156" /></label>
+          <label><span>Club</span><input id="shotClubInput" placeholder="7 iron / Driver / Putter" /></label>
+          <label>
+            <span>Direction / start line</span>
+            <select id="shotDirectionSelect">
+              <option value="">Select</option>
+              <option value="far-left">Far Left</option>
+              <option value="left">Left</option>
+              <option value="center">Center</option>
+              <option value="right">Right</option>
+              <option value="far-right">Far Right</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="grid two">
+          <label>
+            <span>Shot result</span>
+            <select id="shotResultSelect">
+              <option value="">Select</option>
+              <option value="fairway">Fairway</option>
+              <option value="rough">Rough</option>
+              <option value="bunker">Bunker</option>
+              <option value="green">Green</option>
+              <option value="fringe">Fringe</option>
+              <option value="trees">Trees</option>
+              <option value="recovery">Recovery</option>
+              <option value="penalty">Penalty</option>
+              <option value="holed">Holed</option>
+            </select>
+          </label>
+          <label><span>Lie / note</span><input id="shotLieInput" placeholder="Tee, fairway, first cut..." /></label>
+        </div>
+
+        <div class="checks">
+          <label><input id="shotIsPuttCheck" type="checkbox" /> This shot is a putt</label>
+          <label><input id="shotHitGreenCheck" type="checkbox" /> Ball finished on green</label>
+        </div>
+
+        <div class="stack mobile-gap">
+          <button id="addShotBtn" class="primary">Add Shot</button>
+          <button id="clearShotFormBtn" class="ghost">Clear Shot Form</button>
+        </div>
+
+        <div class="shot-list-wrap">
+          <h3>Shots This Hole</h3>
+          <div id="shotList" class="shot-list"></div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="grid three">
+          <label><span>Score</span><input id="scoreInput" type="number" min="1" max="20" /></label>
+          <label><span>Putts</span><input id="puttsInput" type="number" min="0" max="10" /></label>
+          <label><span>Penalties</span><input id="penaltiesInput" type="number" min="0" max="10" /></label>
+        </div>
+
+        <div class="grid two">
+          <label>
+            <span>Approach</span>
+            <select id="approachSelect">
+              <option value="">Select</option>
+              <option>On green</option>
+              <option>Short</option>
+              <option>Long</option>
+              <option>Left</option>
+              <option>Right</option>
+              <option>Bunker</option>
+            </select>
+          </label>
+          <label><span>Notes</span><input id="notesInput" placeholder="What happened?" /></label>
+        </div>
+
+        <div class="checks">
+          <label><input id="firCheck" type="checkbox" /> FIR</label>
+          <label><input id="girCheck" type="checkbox" /> GIR</label>
+          <label><input id="upDownCheck" type="checkbox" /> Up & Down</label>
+          <label><input id="sandSaveCheck" type="checkbox" /> Sand Save</label>
+        </div>
+
+        <div class="stack mobile-gap">
+          <button id="saveHoleBtn" class="primary">Save Hole</button>
+          <button id="finishRoundBtn">Finish Round</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Live Round Stats</h2>
+        <div id="liveStats" class="stats-grid"></div>
+      </div>
+
+      <div class="card">
+        <h2>Club Performance</h2>
+        <div id="clubStats" class="club-grid"></div>
+      </div>
+
+      <div class="card hidden" id="roundAnalysisCard">
+        <h2>Round Analysis</h2>
+        <div id="roundAnalysis"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Saved Rounds</h2>
+      <div id="roundList" class="round-list"></div>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
