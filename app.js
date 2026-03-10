@@ -1,5 +1,6 @@
 const STORAGE_KEY = 'josh-golf-tracker-v5';
 const sampleParTemplate = [4,4,3,5,4,4,3,5,4,4,3,4,5,4,3,4,5,4];
+const beerwahParTemplate = [4,3,4,4,3,4,5,5,4,5,3,5,4,4,4,4,4,3];
 
 const beerwahPins = [
   {lat:-26.8585,lon:152.9580},{lat:-26.8580,lon:152.9592},{lat:-26.8572,lon:152.9602},{lat:-26.8560,lon:152.9610},
@@ -10,8 +11,8 @@ const beerwahPins = [
 ];
 
 const sampleCourses = [
-  { id:'beerwah', name:'Beerwah Golf Club', lat:-26.858, lon:152.958, holes:18, pars: sampleParTemplate,
-    lengths:[352,318,157,458,342,361,148,481,336,347,161,358,470,334,152,341,487,355],
+  { id:'beerwah', name:'Beerwah Golf Club', lat:-26.858, lon:152.958, holes:18, pars: beerwahParTemplate,
+    lengths:[348,153,372,304,135,343,463,475,330,494,134,486,353,305,338,329,343,182],
     holePins: beerwahPins },
   { id:'pelican', name:'Pelican Waters Golf Club', lat:-26.806, lon:153.123, holes:18, pars: sampleParTemplate },
   { id:'headland', name:'Headland Golf Club', lat:-26.676, lon:153.104, holes:18, pars: sampleParTemplate },
